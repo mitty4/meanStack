@@ -1,0 +1,14 @@
+<div>
+		<h2><span ng-bind="current"></span>'s Bucket List</h2>
+		<button ng-controller="dashController" ng-click="logout()">Logout</button>
+		<p ng-bind="user.name"></p>
+		Done
+		<ul >
+			<li ng-bind="user.lists[0].title"></li>
+			<li ng-bind="user.lists[0].description"></li>
+		</ul>
+		Pending
+		<ul ng-repeat="item in items" ng-if="item.done">
+			<li ng-bind="item.title"></li>
+		</ul>
+</div>

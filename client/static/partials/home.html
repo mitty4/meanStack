@@ -1,0 +1,15 @@
+<div ng-controller="homeController">
+	<h1>Bucket Lists</h1>
+	<h2>New User</h2>
+	<p ng-bind="error"></p>
+	<form>
+		Name: <input type="text" name="name" ng-model="newUser">
+		<input type="submit" value="Enter" ng-click="register(newUser)" >
+	</form>
+	<h2>Returning User</h2>
+	<p ng-bind="logError"></p>
+	<form>
+		Name: <input type="text" name="name" ng-model="name">
+		<input type="submit" value="Enter" ng-click="login(name)" >
+	</form>
+</div>
