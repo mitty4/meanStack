@@ -1,15 +1,15 @@
 <div ng-controller="homeController">
 	<h1>Bucket Lists</h1>
 	<h2>New User</h2>
-	<p ng-bind="error"></p>
+	<p ng-bind="registerError"></p>
 	<form>
-		Name: <input type="text" name="name" ng-model="newUser">
+		Name: <input type="text" name="newUser" ng-model="newUser">
 		<input type="submit" value="Enter" ng-click="register(newUser)" >
 	</form>
 	<h2>Returning User</h2>
-	<p ng-bind="logError"></p>
+	<p ng-bind="loginError"></p>
 	<form>
-		Name: <input type="text" name="name" ng-model="name">
-		<input type="submit" value="Enter" ng-click="login(name)" >
+		Name: <input type="text" name="oldUser" ng-model="oldUser">
+		<input type="submit" value="Enter" ng-click="login(oldUser)" >
 	</form>
 </div>

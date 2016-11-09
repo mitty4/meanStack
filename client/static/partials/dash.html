@@ -1,26 +1,33 @@
 <div ng-controller="dashController">
-	<h1 ng-click="getCurrent()">Welcome, <span ng-bind="current"></span></h1>
-	<button ng-click="logout()">Logout</button>
-	<form>
+	<div class="well col-xs-12">
+		<h1 class="col-xs-8" ng-click="getCurrent()">Welcome, <span ng-bind="current"></span></h1>
+		<div class="col-xs-4">
+			<button class="col-xs-2 text-right btn-warning" ng-controller="homeController" ng-click="logout()">Logout</button>
+		</div>
+	</div>
+	<form class="col-xs-12">
 			Title: <input type="text" ng-model="item.title">
 			Description: <input type="text" ng-model="item.description">
 			<select >
 				<option ng-repeat="user in users" ng-bind="user.name" ng-model="user.name"></option>
 			</select>
-		<input type="submit" value="Add To List" ng-click="newItem(item)">
+		<input class="btn-primary" type="submit" value="Add To List" ng-click="newItem(item)">
 	</form>
-
-	<p>Before I die I want to...</p>
-	<form ng-repeat="item in items">
-		<input type="checkbox">
-		<b>Name:</b><span ng-bind="item._user.name"></span>
-		<b>Title:</b><span ng-bind="item.title"></span>
-		<b>Description: </b><span ng-bind="item.description"></span>
-	</form>
-	<p>List of other Users (Click to view)</p>
-	<ul ng-repeat="user in users track by $index">
-		<li>{{ user.name }}<button ng-click="showUser($index)"></button></li>
-	</ul>
+	<div class="col-xs-8">
+		<h3 class="col-xs-12 text-danger">Before I die I want to...</h3>
+		<form ng-repeat="item in items">
+			<input type="checkbox">
+			<b>Name:</b><span ng-bind="item._user.name"></span>
+			<b>Title:</b><span ng-bind="item.title"></span>
+			<b>Description: </b><span ng-bind="item.description"></span>
+		</form>
+	</div>
+	<div class="col-xs-4">
+		<h5 class="text-center">List of other Users (Click to view)</h5>
+		<ul class="col-xs-6" ng-repeat="user in users track by $index">
+			<li>{{ user.name }}<button ng-click="showUser($index)"></button></li>
+		</ul>
+	</div>
 </div>
 
 

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('users');
-var List = mongoose.model('list');
+var List = mongoose.model('lists');
 
 module.exports = {
 	register: function(req, res){
@@ -9,7 +9,7 @@ module.exports = {
 		user.validate(function(err){
 			if(err){
 				console.log('user not created')
-				return res.json({error:'username already taken'})
+				return res.json({registerError:'username already taken'})
 			}
 			user.save(function(err, yes){
 				if(err){
@@ -19,58 +19,30 @@ module.exports = {
 				return res.json({current:user.name})
 			})
 		})
-
 	},
 	login: function(req, res){
- 		User.findOne({name:req.body.current},function(err, user){
-			if(err){console.log('user not found');return res.json({error:'unrecognized name'})}
-			if (user){console.log(user);req.session.name = user.name;return res.json({current:user.name})}
-    })},
+		console.log(req.body.current)
+ 		User.findOne({name:req.body.current},'name',function(err, user){
+			if (user){
+				req.session.name = user.name;	
+				return res.json({current:user.name})
+			}
+			else{
+				console.log('user not found');
+				return res.json({loginError:'unrecognized name'})
+			}
+    	})
+	},
 	getCurrent: function(req, res){
 		var name = req.session.name;
-		console.log(name)
 		res.json({current:name})
 	},
 	getUsers: function(req, res){
-		// User.find({}, function(err, users){
-		// 	if(err){
-		// 		console.log('db failed users')
-		// 	}else{
-		// 		console.log(users)
-		// 		res.json({users:users})
-		// 	}
-
-		// })
 		User.find({})
 			.populate('lists')
 			.exec(function(err, users){
 				res.json({users:users})
-			})
-		// res.json({current:req.session.name})
-	},
-
-	newItem: function(req, res){
-		console.log('=========================',req.body.name)
-		User.findOne({name:req.body.name}, function(err, user){
-			// if(err){
-			// 	console.log('no user db!')
-			// }else{
-			// 	console.log('======user*************',user)
-			// }
-			var list = new List(req.body.item)
-			list._user = user._id;
-			user.lists.push(list)
-			list.save(function(err){
-				user.save(function(err){
-					console.log(user)
-					if(err){
-						console.log('list not created')
-					}
-				})
-			})
-			res.json()
 		})
-
 	},
 	getItems: function(req, res){
 		List.find()
@@ -78,17 +50,24 @@ module.exports = {
 			.exec(function(err, items){
 				res.json({items:items})
 			})
-
 	},
-
+	newItem: function(req, res){
+		User.findOne({name:req.body.name}, function(err, user){
+			var list = new List(req.body.item)
+			list._user = user._id;
+			user.lists.push(list)
+			list.save(function(err){
+				user.save(function(err){
+					if(err){
+						console.log('list not created')
+					}
+				})
+			})
+			res.json()
+		})
+	},
 	newuser: function(req, res){
-		console.log(req.body.name);
 		var user = new User({name: req.body.name})
-		/* ############################# */
-		console.log('***')
-		console.log(user)
-		console.log('***')
-		/* ############################# */
 		user.save(function(err) {
       		if(err){
         		console.log("something went wrong");

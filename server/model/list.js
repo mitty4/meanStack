@@ -6,4 +6,4 @@ var ListSchema = new mongoose.Schema({
 	_user: {type: mongoose.Schema.Types.ObjectId, ref: 'users'}
 });
 
-var List = mongoose.model('list', ListSchema);
+var List = mongoose.model('lists', ListSchema);

@@ -7,44 +7,33 @@ app.factory('Names', function($http){
 	Names.current = "";
 	Names.users = [];
 	Names.items = [];
-	Names.user = [];
-
 	Names.login = function(data, callback, callback2, callback3, callback4){
 		$http.post('/login', {current:data})
 			.success(function(res){
-				if(res.current){console.log('no prbs');Names.current = res.current;callback();callback2()}
-				if(res.logError){Names.logError = res.logError;console.log('login probs');callback3();callback4()}
+				if(res.current){Names.current = res.current;callback();callback2()}
+				if(res.loginError){Names.loginError = res.loginError;callback3();callback4()}
 			})
 			.error(function(err){console.log('failed!')})
 	}
-
 	Names.register = function(data, callback, callback2, callback3, callback4){
 		$http.post('/register', {current:data})
 			.success(function(res){
 				if(res.current){
 					console.log('current exists');Names.current = res.current;callback();callback2()
 				}
-				if(res.error){Names.error=res.error;callback3();callback4()
+				if(res.registerError){Names.registerError=res.registerError;callback3();callback4()
 				}
 			})
 			.error(function(err){console.log('failed!')})
 	}
-
 	Names.getCurrent = function(callback){
 		$http.get('/getCurrent')
 			.success(function(res){Names.current = res.current;callback();console.log('success!')})
 			.error(function(err){console.log('failed!')})
 	}
-
 	Names.getUsers = function(callback){
 		$http.get('/getUsers')
 		.success(function(res){Names.users = res.users;callback();console.log('success!')})
-		.error(function(err){console.log('failed!')})
-	}
-
-	Names.newItem = function(data){
-		$http.post('/newItem', {item:data, name:Names.current})
-		.success(function(res){console.log('success!')})
 		.error(function(err){console.log('failed!')})
 	}
 	Names.getItems = function(callback){
@@ -52,82 +41,64 @@ app.factory('Names', function($http){
 		.success(function(res){Names.items = res.items;callback();console.log('success!')})
 		.error(function(err){console.log('failed!')})
 	}
-	Names.showUser = function(data, callback){
-		callback(data)
-		Names.user = Names.users[data]
-		console.log(Names.user)
+	Names.newItem = function(data, callback){
+		$http.post('/newItem', {item:data, name:Names.current})
+		.success(function(res){console.log('success!');callback()})
+		.error(function(err){console.log('failed!')})
 	}
-	Names.logout = function(){
+	Names.logout = function(callback){
 		Names.current = [];
-				
+		callback()
 	}
 	return Names;
 });
 
 
 
-/* CONTROLLERCONTROLLERCONTROLLERCONTROLLERCONTROLLER */
+/* dashController  CONTROLLERCONTROLLERCONTROLLERCONTROLLERCONTROLLER */
 app.controller('dashController', ['$scope', '$location', 'Names', function($scope, $location, Names){
 	$scope.current = [];
 	$scope.users = [];
 	$scope.items = [];
-
-	$scope.locate = function(data){
-		$location.url(data)
-	}
-	$scope.call = function(callback){
-		callback()
-	}
-	$scope.users = function(){
-		$scope.users = Names.users;
-	}
 	$scope.getUsers = function(){
 		Names.getUsers(function(){$scope.users = Names.users});
 	}
 	$scope.newItem = function(data){
-		Names.newItem(data)
-		// $scope.getItems($scope.items)
+		Names.newItem(data, $scope.getItems)
 		$scope.item = {};
-		// $scope.call($scope.getItems)
-		$scope.locate('/dash')
+		$scope.dash()
 	}
 	$scope.getItems = function(){
 		Names.getItems(function(){$scope.items = Names.items});
 	}
-	$scope.logout = function(){
-		Names.logout()
-		console.log('logout')
-		$location.url('/')
-	}
-	$scope.test = function(){console.log('test')}
 	$scope.getCurrent = function(){
 		Names.getCurrent(function(){$scope.current = Names.current});
 	}
+
 	$scope.getCurrent()
 	$scope.getUsers()
 	$scope.getItems()
-	
 }]);
 
 
 
-/* homeController CONTROLLERCONTROLLERCONTROLLERCONTROLLERCONTROLLER */
+/* homeController  CONTROLLERCONTROLLERCONTROLLERCONTROLLERCONTROLLER */
 app.controller('homeController', ['$scope', '$location', 'Names', function($scope, $location, Names){
 	$scope.error = "";
 	$scope.login = function(data){
-		Names.login(data, $scope.getCurrent, $scope.dash, $scope.home, $scope.getLogError)
-		$scope.name = "";
+		Names.login(data, $scope.getCurrent, $scope.dash, $scope.home, $scope.getLoginError)
+		$scope.oldUser = "";
 	}
 	$scope.register = function(data){
 		// $scope.current = ['no user'];
-		Names.register(data,$scope.getCurrent,$scope.dash,$scope.home, $scope.getError)
+		Names.register(data,$scope.getCurrent,$scope.dash,$scope.home, $scope.getRegisterError)
 		$scope.newUser = "";
 	}
-	$scope.getError = function(){
-		$scope.error = Names.error;
+	$scope.getRegisterError = function(){
+		$scope.registerError = Names.registerError;
 	}
-	$scope.getLogError = function(){	
-		$scope.logError = Names.logError;
+	$scope.getLoginError = function(){	
+		$scope.loginError = Names.loginError;
 	}
 	$scope.getCurrent = function(){
 		$scope.current = Names.current;
@@ -137,6 +108,9 @@ app.controller('homeController', ['$scope', '$location', 'Names', function($scop
 	}
 	$scope.home = function(){
 		$location.url('/')
+	}
+	$scope.logout = function(){
+		Names.logout($scope.home)
 	}
 }]);
 
